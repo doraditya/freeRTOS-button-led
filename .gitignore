@@ -1,0 +1,98 @@
+# gitignore
+lst/
+obj/
+bin/
+build/
+tmp/
+*.bin
+.kdev4
+*.log
+*.dep
+*.uvgui.*
+*.uvgui_*.bak
+*.uvguix.*
+*.uvguix_*.bak
+*_uvopt.bak
+*_uvoptx.bak
+*_uvproj.bak
+*_uvprojx.bak
+*.ctx
+*.dbi
+*.xdb
+*.svn
+*.pbxproj
+*.cogui
+*.comarker
+.directory
+launch.json
+.cmaketools.json
+
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+*.r51
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.bin
+*.ubr
+
+# Debug files
+*.dSYM
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db 
+
+# Ignore build directories
+Debug/
+Release/
+.settings/language.settings.xml
