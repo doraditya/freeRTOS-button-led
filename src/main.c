@@ -35,7 +35,8 @@ int main(void)
 	SystemCoreClockUpdate();
 
 	prvSetupHardware();
-
+	SEGGER_SYSVIEW_Conf();
+	SEGGER_SYSVIEW_Start();
 	//led task
 	xTaskCreate(led_task_handler,"LED-TASK",configMINIMAL_STACK_SIZE,NULL,1,NULL);
 	//button task
