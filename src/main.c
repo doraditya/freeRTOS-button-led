@@ -25,7 +25,7 @@ static void prvSetupUART(void);
 void prvSetupGPIO(void);
 
 void led_task_handler(void *params);
-void button_task_handler(void *params);
+void button_handler(void *params);
 
  uint8_t button_status_flag = NOT_PRESSED;
 int main(void)
@@ -39,7 +39,7 @@ int main(void)
 	//led task
 	xTaskCreate(led_task_handler,"LED-TASK",configMINIMAL_STACK_SIZE,NULL,1,NULL);
 	//button task
-	xTaskCreate(button_task_handler,"BUTTON-TASK",configMINIMAL_STACK_SIZE,NULL,1,NULL);
+	//xTaskCreate(button_task_handler,"BUTTON-TASK",configMINIMAL_STACK_SIZE,NULL,1,NULL);
 	// Start scheduler
 	vTaskStartScheduler();
 
@@ -61,19 +61,9 @@ void led_task_handler(void *params)
 	}
 }
 
-void button_task_handler(void *params)
+void button_handler(void *params)
 {
-	while(1)
-	{
-		if(!GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
-		{
-			button_status_flag = NOT_PRESSED;
-		}
-		else
-		{
-			button_status_flag = PRESSED;
-		}
-	}
+	button_status_flag ^=1;
 }
 
 
@@ -129,6 +119,7 @@ void prvSetupGPIO(void)
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA,ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,ENABLE);
 
 	GPIO_InitTypeDef led_init, button_init;
 	led_init.GPIO_Mode = GPIO_Mode_OUT;
@@ -147,6 +138,29 @@ void prvSetupGPIO(void)
 
 	GPIO_Init(GPIOA,&button_init);
 
+	//exti setup
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA,EXTI_PinSource0);
+	EXTI_InitTypeDef exti_init;
+	exti_init.EXTI_Line = EXTI_Line0;
+	exti_init.EXTI_Mode = EXTI_Mode_Interrupt;
+	exti_init.EXTI_Trigger = EXTI_Trigger_Falling;
+	exti_init.EXTI_LineCmd = ENABLE;
+
+	EXTI_Init(&exti_init);
+
+	//NVIC setting
+	NVIC_SetPriority(EXTI0_IRQn,5);
+	NVIC_EnableIRQ(EXTI0_IRQn);
+
+}
+
+void EXTI0_IRQHandler(void)
+{
+	traceISR_ENTER();
+	//1. clear the interrupt pending bit of the exti line (0)
+	EXTI_ClearITPendingBit(EXTI_Line0);
+	button_handler(NULL);
+	traceISR_EXIT();
 
 
 }
